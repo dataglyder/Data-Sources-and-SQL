@@ -8,14 +8,14 @@ Data Scientist or Analyst often work in an environment where the organization ha
 Structured (tabular) data depending on their size could be stored in spreadsheet, relational databases. Relational databases could accommodate bigger data than  spreadsheet and they are relational because of their algorithm that allow interconnectivity among the table.
 
 ### Web Scraping
-Web scraping is the act of gatheing or collecting data from various websites. While some websites have heavy security around their data and prohibit unauthorized collection of them, others allow free scraping of thiers. It is responsible and ethical to check website rules before tampering with their data. For Data that are available in HTML(Hyper Text Markup Language) or JavaScript format, BeautifulSoup and or Selenium might be a good way to extract such data. But some websites that render their available data in a semi organized formt- json; could be accessed with provided API-key. 
+Web scraping is the act of gatheing or collecting data from various websites. While some websites have heavy security around their data and prohibit unauthorized collection of them, others allow free scraping of thiers. It is responsible and ethical to check website rules before tampering with their data. For Data that are available in HTML(Hyper Text Markup Language) BeautifulSoup might be a good way to extract such data.
 
-### Sourcing HTML Data with BautifulSoup
-Websites built with HTML usually have some dirts that could easily be separated from the needed data with [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc). Below is a demonstration on how this could be achieved. We'll be using BeautifulSoup to access data from [Books to scrape](https://books.toscrape.com/)- a website that allows free collection of its data.
+### Extracting HTML Tags with BautifulSoup
+Tags in websites that are built in Hyper Text Markup Language (HTML) could sometimes be acompany with unwanted texts; these tags could be separated with  [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc). Below is a demonstration of how this could be achieved. We'll be using BeautifulSoup to access data from [Books to scrape](https://books.toscrape.com/)- a website that allows free collection of its data.
 
 
 ### Connect to a website 
-First we need to import an important library that will help us connect to the website the "urllib.request"
+First we need to import the library that will help us connect to the website the "urllib.request"
 ***Ensure that all libraries have been downloaded before import***
 ```
 import urllib.request
@@ -64,7 +64,7 @@ open_webpg_get_elements("https://books.toscrape.com/")
 The printed data has a lot of tags with both wanted and unwanted texts
 
 ### HTML Tags
-One of the tags that I will like to get is the anchor tag. It houses the catalogue link of books and their category. But then, it also need to be separated from unwanted text. This extraction could be done using [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-using-tag-names) but I will use python [Regular Expresion](https://docs.python.org/3/library/re.html) to extract what I need.
+One of the tags that I will like to get is the anchor tag. It houses the catalogue link of books and their categories. But then, it also need to be separated from unwanted text. Let's combine [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-using-tag-names)  and python [Regular Expresion](https://docs.python.org/3/library/re.html) to extract what we need.
 
 ```
 import re
@@ -72,32 +72,52 @@ import re
 def anchor_tag(tags):
   tag = tags("a")       # Get the anchor tag
   #print(tag)            # View the anchor tag, optional
-  category_link = re.findall("<a.+category.+", str(tags))  # Extract the category link
+  anchor_tag_ind = tag[3:53]
+  category_link = re.findall("<a.+category.+", str(anchor_tag_ind))   # Extract the category link
 
-  category_link_list = []
   book_category = []
 
-  for cat in category_link:
-    category_link_list.append(cat)
-    book_category.extend(re.findall("<.+books/(.+)/", str(cats))      # Extract book category
+  for anchor in anchor_tag_ind:
+    book_category.append((anchor.next_element).strip())      # Extract book category 
 
-# Now that the data is clean and ready, we can create panda's dataframe for direct analysis,
-# we can save it as a json, csv, excel file or store it in database.file, 
 
-import pandas as pd
-
-book_category = pd.DataFrame({"book_category_link":category_link_list[1:], "category":book_category})    # The 1st link in the list is not needed hence, the index
-
-#print(book_category)       # To view the table, optional
-return book_category
+#print(book_category)       # Optional to view the list
+return category_link, book_category
 
 # Test the function
 anchor_tag(open_webpg_get_elements("https://books.toscrape.com/"))
 
 ```
+Let's extract other necessary tags
 
 
-![category link table]() 
+```
+def other_tags(others):
+  book_price = re.findall('<p.+(£\\d{2}\\.\\d{2})',str(others))
+	ratings = re.findall(r'<p.+(star.+?)"', str(others))
+	title_catalogue = others("h3")
+  title =re.findall(r'title=(".+?)>', str(title_catalogue))
+
+	title_links=[]
+
+  for links in title_catalogue:
+	title_links.extend(re.findall('<a.+\\.html', str(links)))
+	#print(title_links,title, book_price, ratings)
+	return (title_links,title, book_price, ratings)
+
+other_tags(open_webpg_and_access_elements("https://books.toscrape.com/"))
+```
+
+![category link table]()
+
+### Save Data for future use
+Now that we have our data ready, it can be saved in different ways for future use.
+
+```
+def save_data(data):
+
+
+```
 
 
 
