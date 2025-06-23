@@ -5,7 +5,7 @@ Working with data is fun, but having access to quality and readily available dat
 Data Scientist or Analyst often work in an environment where the organization has its own source of data for example, most retail companys store the data of their customers and busines transactions; these could be made availble to analyst when necessary. But in a situation where such is absent, the responsibility might lie on the analyst to source for data; ususally via the internet.
 
 ### Data Storage
-Structured (tabular) data depending on their size could be stored in spreadsheet, relational databases. Relational databases could accommodate bigger data than  spreadsheet and they are relational because of their algorithm that allow interconnectivity among the table.
+Structured (tabular) data depending on their size could be stored in spreadsheet or relational database. Relational database could accommodate bigger data than  spreadsheet and they are relational because of their algorithm that allow interconnectivity among the table.
 
 ### Web Scraping
 Web scraping is the act of gatheing or collecting data from various websites. While some websites have heavy security around their data and prohibit unauthorized collection of them, others allow free scraping of thiers. It is responsible and ethical to check website rules before tampering with their data. For Data that are available in HTML(Hyper Text Markup Language) BeautifulSoup might be a good way to extract such data.
@@ -122,3 +122,4 @@ def save_data(data):
 
 
 
+***To be continued***
