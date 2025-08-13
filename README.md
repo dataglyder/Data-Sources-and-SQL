@@ -73,37 +73,35 @@ import re
 
 def anchor_tag(tags):
 
-"""
-Get the anchor tag
-View the anchor tag, optional
-Extract the category link
-Extract book category
-Optional to view the list
+			"""
+				Get the anchor tag
+				View the anchor tag, optional
+				Extract the category link
+				Extract book category
+				Optional to view the list
 
 """
-  tag = tags("a")       
-  #print(tag)            
-  anchor_tag_ind = tag[3:53]
-  category_link = re.findall("<a.+category.+", str(anchor_tag_ind))   
+  	tag = tags("a")                   
+  	anchor_tag_ind = tag[3:53]
+  	category_link = re.findall("<a.+category.+", str(anchor_tag_ind))   
 
-  book_category = []
+  	book_category = []
 
-  for anchor in anchor_tag_ind:
-    book_category.append((anchor.next_element).strip())
-
-  #print(book_category)     
+  	for anchor in anchor_tag_ind:
+    	book_category.append((anchor.next_element).strip())
+     
 
   # Get other needed tags and return all extracted tags
      
-  book_price = re.findall('<p.+(£\\d{2}\\.\\d{2})',str(tags))
-  ratings = re.findall(r'<p.+(star.+?)"', str(tags))
-  title_catalogue = tag("h3")
-  title =re.findall(r'title=(".+?)>', str(title_catalogue))
+  	book_price = re.findall('<p.+(£\\d{2}\\.\\d{2})',str(tags))
+  	ratings = re.findall(r'<p.+(star.+?)"', str(tags))
+  	title_catalogue = tag("h3")
+  	title =re.findall(r'title=(".+?)>', str(title_catalogue))
 
 	title_links=[]
 
-  for links in title_catalogue:
-	title_links.extend(re.findall('<a.+\\.html', str(links)))
+  	for links in title_catalogue:
+		title_links.extend(re.findall('<a.+\\.html', str(links)))
 	
 	
 return category_link, book_category, title_links, title, book_price, ratings
@@ -139,7 +137,7 @@ def csv_data(data):
 
 csv_data(open_webpage(anchor_tag(open_webpage(url)))
 
-# 	 print(pd.read_csv("catalogue.csv"))  # i.e to check the saved data
+#print(pd.read_csv("catalogue.csv"))  # i.e to check the saved data
 
 """
 Using the Easier method: One can convert the data to a data frame and then
@@ -175,8 +173,55 @@ with open("catalogue.json", "r") as bk:
 ### Save Data in Database using SQL
 
 Here, I will be using SQLite
+```
+def save_to_database(data):
 
-def save_to_database():
+				"""
+						Choose a database name and establish connection 
+						Ensure database is empy
+						Create taable and its fields - I will be creating two tables
+						Prepare data i.e available in list of tuple(s)
+						Insert prepared data into table(s)
+						Don't forget to commit
+
+"""
+
+	import sqlite3
+
+	connection=sqlite3.connect("dataBaseName.sqlite")
+	corsor=connection.cursor()
+
+	corsor.execute( "DROP TABLE If EXISTS bookCatalogue;")
+	corsor.execute( "DROP TABLE If EXISTS title_link;")
 
 
+	corsor.execute("CREATE TABLE bookCatalogue(catalogue_link TEXT, category TEXT)")
+	corsor.execute("CREATE TABLE titleLink(title_link TEXT, category TEXT)")
+
+	table1_data=[]
+	for i in range(len(category_link)):
+		book_link=(category_link[i], book_category[i])
+		table1_data.append(book_link)
+ 
+ 	table2_data = []
+ 	for j in range(len(title_links)):
+ 		titles= (title_links[j], book_price[j], title[j], ratings[j])
+ 		table2_data.append(titles)
+
+	corsor.executemany("INSERT INTO catalogue_link VALUES(?,?)", table1_data )
+	corsor.executemany("INSERT INTO titleLink VALUES(?,?,?,?)", table2_data )
+
+	connection.commit()
+
+# Varify your data in the databse
+
+	checking= corsor.execute("SELECT category from bookCatalogue")
+	print(c.fetchone()) # or fetchall() for the whole row
+	return checking
+
+save_to_database(anchor_tag(open_webpage(url)))
+
+```
 ***To be continued***
+
+### Extract Data with API
