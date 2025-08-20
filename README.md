@@ -29,15 +29,13 @@ def open_webpage(url):
 open_webpage("https://books.toscrape.com/")
 ```
 
-![successful connection]()
-
 ### Access HTML Elements with BeautifuSoup
 Now, let's view the HTML elements with BeautifulSoup.
 ```
 from bs4 import BeautifulSoup as bee
 
 def get_elements(elements):
-  print(bee(elements, "url.parser"))    # To view the elements 
+  print(bee(elements, "url.parser"))    # optional 
   return bee(elements, "url.parser")
 
 # Ready to test our function
@@ -60,10 +58,9 @@ def open_webpg_get_elements(url):
 open_webpg_get_elements("https://books.toscrape.com/")
 
 ```
-![page]()
 
-**A Glimpse of the printed page**
-The printed data has a lot of tags with both wanted and unwanted texts
+**A Glimpse of the printed page**:
+The printed data has a lot of tags with both wanted and unwanted texts.
 
 ### Extracting HTML Tags
 One of the tags that I will like to get is the anchor tag. It houses the catalogue link of books and their categories. But then, it also need to be separated from unwanted text. Let's combine [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#navigating-using-tag-names)  and python [Regular Expresion](https://docs.python.org/3/library/re.html) to extract what we need.
